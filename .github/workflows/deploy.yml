@@ -1,0 +1,50 @@
+# abaixo segue o nome da ação que será executada.
+
+name: Executar publicação para o GithubPages
+
+# aqui configuramos o evento que vai servir de gatilho para a ação
+# no nosso caso, quando fizemos PUSH para a branch develop
+# um outro exemplo seria on pull_request
+
+on:
+    push:
+        branches:
+            - develop
+
+# aqui configuramos as tarefas do deploy
+# um dos passos, por exemplo, é a execução dos testes de unidade
+jobs:
+    deploy:
+        name: Publicando a aplicação
+        #Este é o sistema operacional da máquina virtual em que seu código será executado. 
+
+        runs-on: ubuntu-latest
+
+        steps:
+          # aqui, estamos utilizando Github Actions do marketplace, para facilitar o nosso fluxo
+          # saiba mais aqui: https://github.com/marketplace?type=actions
+
+            - name: Checkout
+              uses: actions/checkout@master
+            - name: Criar ambiente do node
+              uses: actions/setup-node@v1
+              with: 
+                node-version: 10.x
+
+          # agora, vamos baixar e instalar as dependências
+          # e logo em seguida, gerar o build do projeto
+
+            - name: Instalar dependências e executar o script de build
+              run: |
+                npm install i
+                npm run build
+          # aqui nós vamos usar mais uma Action do marketplace
+          # para enviar os arquivos estáticos de build para a branch master
+          
+            - name: Publicando o build gerado
+              uses: s0/git-publish-subdir-action@develop
+              env:
+                REPO: self
+                BRANCH: master
+                FOLDER: dist
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
