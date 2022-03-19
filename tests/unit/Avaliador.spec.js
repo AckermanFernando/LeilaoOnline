@@ -32,7 +32,7 @@ describe('Um avaliador que acessa a API', () => {
         expect(listaLeiloes).toBe(leilao.length)
     })
 
-    test('não há leilões retornados pela API', async () => {
+    test('Não há leilões retornados pela API', async () => {
         getLeiloes.mockResolvedValueOnce([])
 
         const wrapper = mount(Avaliador, {
